@@ -1,9 +1,15 @@
 from redis import asyncio as redis
-from settings import REDIS_HOST, REDIS_PORT
+from settings import Settings
 
 
 async def get_redis_connection() -> redis.Redis:
-    return redis.Redis(host=REDIS_HOST, port=REDIS_PORT, decode_responses=True)
+    settings = Settings()
+    return redis.Redis(
+        host=settings.REDIS_HOST,
+        port=settings.REDIS_PORT,
+        db=settings.REDIS_DB,
+        decode_responses=True
+    )
 
 
 
