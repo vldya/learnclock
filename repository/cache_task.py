@@ -3,7 +3,7 @@ from typing import Optional, Any
 
 from redis import Redis
 
-from shema.task import TaskSchema
+from schema.task import TaskSchema
 
 
 class TaskCacheRepository:
