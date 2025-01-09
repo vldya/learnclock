@@ -1,10 +1,10 @@
 from fastapi import APIRouter, status, Depends
 from typing import Annotated
 
-from dependency import get_tasks_repository, get_cache_repository, get_tasks_service
+from dependency import get_tasks_repository, get_tasks_service
 from service import TaskService
-from shema.task import TaskSchema
-from repository import TaskRepository, TaskCacheRepository
+from schema.task import TaskSchema
+from repository import TaskRepository
 
 router = APIRouter(prefix='/task', tags=['task'])
 
