@@ -1,3 +1,5 @@
+from typing import Optional
+
 from pydantic import BaseModel
 
 
@@ -7,6 +9,9 @@ class UserLoginSchema(BaseModel):
 
 
 class UserCreateSchema(BaseModel):
-    username: str
-    password: str
+    username: Optional[str] = None
+    password: Optional[str] = None
+    google_access_token: Optional[str]
+    email: Optional[str]
+    name: Optional[str]
 
