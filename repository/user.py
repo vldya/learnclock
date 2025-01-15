@@ -1,6 +1,7 @@
 from typing import Optional
 
 from sqlalchemy import insert, select
+from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import Session
 from dataclasses import dataclass
 from database import UserProfile
@@ -9,29 +10,30 @@ from schema import UserCreateSchema
 
 @dataclass
 class UserRepository:
-    db_session: Session
+    db_session: AsyncSession
 
-    def create_user(self, user: UserCreateSchema) -> UserProfile:
+    async def create_user(self, username: str, password: str) -> UserProfile:
         query = insert(UserProfile).values(
-            **user.model_dump()
+            username=username,
+            password=password,
         ).returning(UserProfile.id)
-        with self.db_session() as session:
-            user_id: int = session.execute(query).scalar()
-            session.commit()
-            session.flush()
-            return self.get_user(user_id)
+        async with self.db_session as session:
+            user_id: int = (await session.execute(query)).scalar()
+            await session.commit()
+            await session.flush()
+            return await self.get_user(user_id)
 
-    def get_user(self, user_id: int) -> Optional[UserProfile]:
+    async def get_user(self, user_id: int) -> Optional[UserProfile]:
         query = select(UserProfile).where(UserProfile.id == user_id)
-        with self.db_session() as session:
-            return session.execute(query).scalar_one_or_none()
+        async with self.db_session as session:
+            return (await session.execute(query)).scalar_one_or_none()
 
-    def get_user_by_username(self, username: str) -> Optional[UserProfile]:
+    async def get_user_by_username(self, username: str) -> Optional[UserProfile]:
         query = select(UserProfile).where(UserProfile.username == username)
-        with self.db_session() as session:
-            return session.execute(query).scalar_one_or_none()
+        async with self.db_session as session:
+            return (await session.execute(query)).scalar_one_or_none()
 
-    def get_user_by_email(self, email: str) -> Optional[UserProfile]:
+    async def get_user_by_email(self, email: str) -> Optional[UserProfile]:
         query = select(UserProfile).where(UserProfile.email == email)
-        with self.db_session() as session:
-            return session.execute(query).scalar_one_or_none()
+        async with self.db_session as session:
+            return (await session.execute(query)).scalar_one_or_none()

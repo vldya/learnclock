@@ -7,7 +7,7 @@ class Settings(BaseSettings):
     DB_USER: str = 'postgres'
     DB_PASSWORD: str = 'password'
     DB_NAME: str = 'learn_clock'
-    DB_DRIVER: str = 'postgresql+psycopg2'
+    DB_DRIVER: str = 'postgresql+asyncpg'
     REDIS_HOST: str = 'localhost'
     REDIS_PORT: int = 6379
     REDIS_DB: int = 0

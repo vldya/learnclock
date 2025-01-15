@@ -1,7 +1,7 @@
 import json
 from typing import Optional, Any
 
-from redis import Redis
+from redis import asyncio as Redis
 
 from schema.task import TaskSchema
 
@@ -11,13 +11,15 @@ class TaskCacheRepository:
         self.redis = redis
 
     async def get_tasks(self) -> Optional[list[TaskSchema]]:
-        tasks_json = await self.redis.lrange('tasks', 0, -1)
-        if tasks_json:
-            return [TaskSchema.model_validate(json.loads(task)) for task in tasks_json]
+        async with self.redis as redis:
+            tasks_json = await redis.lrange('tasks', 0, -1)
+            if tasks_json:
+                return [TaskSchema.model_validate(json.loads(task)) for task in tasks_json]
         return None
 
     async def set_tasks(self, tasks: list[TaskSchema]) -> None:
         tasks_json = [task.json() for task in tasks]
-        await self.redis.rpush('tasks', *tasks_json)
-        await self.redis.expire('tasks', 60)
+        async with self.redis as redis:
+            await redis.rpush('tasks', *tasks_json)
+            await redis.expire('tasks', 60)
 

@@ -23,7 +23,7 @@ async def create_task(
         task_service: Annotated[TaskService, Depends(get_tasks_service)],
         user_id: int = Depends(get_request_user_id)
 ):
-    task = task_service.create_task(body, user_id)
+    task = await task_service.create_task(body, user_id)
     return task
 
 
@@ -39,7 +39,7 @@ async def update_task(
 
 ):
     try:
-        return task_service.update_task_name(task_id=task_id, name=name, user_id=user_id)
+        return await task_service.update_task_name(task_id=task_id, name=name, user_id=user_id)
     except TaskNotFound as e:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
@@ -57,7 +57,7 @@ async def delete_task(
         user_id: int = Depends(get_request_user_id)
 ):
     try:
-        task_service.delete_task(task_id=task_id, user_id=user_id)
+        await task_service.delete_task(task_id=task_id, user_id=user_id)
     except TaskNotFound as e:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
