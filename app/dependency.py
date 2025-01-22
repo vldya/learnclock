@@ -6,7 +6,8 @@ from app.database import get_db_session
 from app.exception import TokenExpired, TokenNotCorrect
 from app.repository import TaskRepository, TaskCacheRepository, UserRepository
 from app.cache import get_redis_connection
-from app.service import TaskService, UserService, AuthService
+from app.service import TaskService, UserService
+from app.service.auth import AuthService
 from fastapi import Depends, security, Security, HTTPException
 from redis.asyncio import Redis
 
